@@ -1,0 +1,9 @@
+# Process 1 — local upload script
+python-dotenv
+databricks-sdk
+
+# Process 5 — Streamlit dashboard
+streamlit
+pandas
+plotly
+shapely

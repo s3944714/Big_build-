@@ -1,0 +1,38 @@
+# --- Secrets - never commit these ---
+.env
+.streamlit/secrets.toml
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# --- Virtual environments ---
+venv/
+.venv/
+env/
+ENV/
+
+# --- Jupyter notebooks ---
+.ipynb_checkpoints/
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# --- Logs ---
+*.log
+
+# --- Raw source data - large, licensed downloads staged before Databricks upload ---
+# See CLAUDE.md's "Two different data/ folders" note. The leading slash below anchors this
+# to the repo root ONLY - it does not touch streamlit_app/data/, which is a different
+# directory and stays committed on purpose (small, already-aggregated output the deployed
+# Streamlit app needs to actually run). Tested to confirm before relying on it.
+/data/
