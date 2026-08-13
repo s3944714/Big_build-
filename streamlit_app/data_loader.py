@@ -12,6 +12,7 @@ import streamlit as st
 DATA_DIR = Path(__file__).resolve().parent / "data"
 GOLD_TABLE_PATH = DATA_DIR / "gold_lga_priority.csv"
 BOUNDARIES_PATH = DATA_DIR / "vic_lga_boundaries.geojson"
+TREND_TABLE_PATH = DATA_DIR / "lga_trend_results.csv"
 
 
 def _normalize_lga_name(raw_name: str) -> str:
@@ -94,6 +95,26 @@ def load_lga_centroids() -> dict[str, tuple[float, float]]:
         if feature.get("geometry") is None:
             continue
         name = feature["properties"]["lga_canonical"]
-        centroid = shape(feature["geometry"]).centroid
-        centroids[name] = (centroid.y, centroid.x)  # (lat, lon)
+        geom = shape(feature["geometry"])
+        # representative_point(), not centroid - centroid is the geometric middle and can
+        # land outside the actual shape entirely for multi-part geometries (e.g. Bass Coast:
+        # mainland + Phillip Island, with Western Port Bay - water - physically between them).
+        # representative_point() is guaranteed to fall inside the polygon.
+        point = geom.representative_point()
+        centroids[name] = (point.y, point.x)  # (lat, lon)
     return centroids
+
+
+@st.cache_data
+def load_trend_table() -> pd.DataFrame | None:
+    """Process 4's output (04_trend_forecast.py's silver_lga_trend Databricks table, exported
+    locally as lga_trend_results.csv). Unlike load_gold_table, missing this file is NOT fatal -
+    Process 4 is an explicit stretch goal, and the dashboard's core functionality (score,
+    ranking, clustering) doesn't depend on it. Callers should handle None gracefully (show
+    "no trend data" rather than crash), not assume this always returns something."""
+    if not TREND_TABLE_PATH.exists():
+        return None
+    df = pd.read_csv(TREND_TABLE_PATH)
+    for col in df.select_dtypes(include="object").columns:
+        df[col] = df[col].str.strip()
+    return df
