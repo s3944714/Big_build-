@@ -10,7 +10,7 @@ application.
 
 
 
-**🔗 Live demo:** [_add the Streamlit Community Cloud URL here once deployed_](https://s3944714-big-build--streamlit-apphome-4t6vat.streamlit.app/)
+**🔗 Live demo:** [_Link_](https://s3944714-big-build--streamlit-apphome-4t6vat.streamlit.app/)
 
 ---
 
